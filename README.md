@@ -11,7 +11,7 @@ The API consists of the following endpoints:
 * `/data` : Fetches the latest data point that matches the current datetime.
 * `/data/hour` : Fetches the data for the previous hour from the current datetime.
 * `/data/day` : Fetches the data for the previous day from the current datetime.
-* `/data/all` : Fetches all available historical data before the current datetime
+* `/data/history` : Fetches all available historical data before the current datetime
 
 * `/variables`: Fetches the names of all available variables.
 
