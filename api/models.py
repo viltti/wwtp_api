@@ -1,6 +1,6 @@
 #from datetime import datetime, timedelta
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.pool import QueuePool
 import os
 
@@ -12,29 +12,49 @@ class Data:
         return engine
 
     @staticmethod
-    def get_data():
+    def get_data(variable = None):
         timestamp = pd.Timestamp.now().floor('10min')
-        query = f"SELECT * FROM wwtp_data WHERE index = '{timestamp}'"
+        if variable is not None:
+            query = f"SELECT index, {variable} FROM wwtp_data WHERE index = '{timestamp}'"
+        else:
+            query = f"SELECT * FROM wwtp_data WHERE index = '{timestamp}'"
         data = pd.read_sql_query(query, Data.get_db_connection())
         return data
 
     @staticmethod
-    def get_history():
+    def get_history(variable = None):
         timestamp = pd.Timestamp.now().floor('10min')
-        query = f"SELECT * FROM wwtp_data WHERE index <= '{timestamp}'"
+        if variable is not None:
+            query = f"SELECT index, {variable} FROM wwtp_data WHERE index <= '{timestamp}'"
+        else:
+            query = f"SELECT * FROM wwtp_data WHERE index <= '{timestamp}'"
         data = pd.read_sql_query(query, Data.get_db_connection())
         return data
 
     @staticmethod
-    def get_previous_day():
+    def get_previous_day(variable = None):
         timestamp = pd.Timestamp.now().floor('10min') - pd.DateOffset(days=1)
-        query = f"SELECT * FROM wwtp_data WHERE index BETWEEN '{timestamp}' AND '{timestamp + pd.DateOffset(days=1)}'"
+        if variable is not None:
+            query = f"SELECT index, {variable} FROM wwtp_data WHERE index BETWEEN '{timestamp}' AND '{timestamp + pd.DateOffset(days=1)}'"
+        else:
+            query = f"SELECT * FROM wwtp_data WHERE index BETWEEN '{timestamp}' AND '{timestamp + pd.DateOffset(days=1)}'"
         data = pd.read_sql_query(query, Data.get_db_connection())
         return data
 
     @staticmethod
-    def get_previous_hour():
+    def get_previous_hour(variable = None):
         timestamp = pd.Timestamp.now().floor('10min') - pd.DateOffset(hours=1)
-        query = f"SELECT * FROM wwtp_data WHERE index BETWEEN '{timestamp}' AND '{timestamp + pd.DateOffset(hours=1)}'"
+        if variable is not None:
+            query = f"SELECT index, {variable} FROM wwtp_data WHERE index BETWEEN '{timestamp}' AND '{timestamp + pd.DateOffset(hours=1)}'"
+        else:
+            query = f"SELECT * FROM wwtp_data WHERE index BETWEEN '{timestamp}' AND '{timestamp + pd.DateOffset(hours=1)}'"
         data = pd.read_sql_query(query, Data.get_db_connection())
         return data
+    
+    @staticmethod
+    def get_variables():
+        engine = Data.get_db_connection()
+        metadata = MetaData()
+        wwtp_data = Table('wwtp_data', metadata, autoload_with=engine)
+        variables = [column.key for column in wwtp_data.columns if column.key != 'index']
+        return variables
