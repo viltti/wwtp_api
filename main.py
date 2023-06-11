@@ -13,9 +13,9 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
     
+    app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+
     '''
     if os.getenv('FLASK_ENV') == 'development':
         app.run(debug=True)
