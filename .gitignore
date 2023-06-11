@@ -1,0 +1,16 @@
+# .env files
+.env
+
+# Python cache files
+__pycache__/
+
+# Virtual environment directory
+/apienv/
+
+# Procfile
+Procfile
+
+# Compiled python binaries
+*.pyc
+*.pyo
+*.pyd
