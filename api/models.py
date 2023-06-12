@@ -1,15 +1,23 @@
-#from datetime import datetime, timedelta
 import pandas as pd
-from sqlalchemy import create_engine, MetaData, Table
-from sqlalchemy.pool import QueuePool
-import os
+from sqlalchemy import MetaData, Table
+from flask import current_app
+from contextlib import contextmanager
 
 class Data:
+
     @staticmethod
-    def get_db_connection():
-        DB_URL = os.getenv('DB_URL')
-        engine = create_engine(DB_URL, poolclass=QueuePool, pool_recycle=600)
-        return engine
+    @contextmanager
+    def get_db_session():
+        Session = current_app.config['SESSION']
+        session = Session()
+        try:
+            yield session
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
     @staticmethod
     def get_data(variable = None):
@@ -18,7 +26,8 @@ class Data:
             query = f"SELECT index, {variable} FROM wwtp_data WHERE index = '{timestamp}'"
         else:
             query = f"SELECT * FROM wwtp_data WHERE index = '{timestamp}'"
-        data = pd.read_sql_query(query, Data.get_db_connection())
+        with Data.get_db_session() as session:
+            data = pd.read_sql_query(query, session.connection())
         return data
 
     @staticmethod
@@ -28,7 +37,8 @@ class Data:
             query = f"SELECT index, {variable} FROM wwtp_data WHERE index <= '{timestamp}'"
         else:
             query = f"SELECT * FROM wwtp_data WHERE index <= '{timestamp}'"
-        data = pd.read_sql_query(query, Data.get_db_connection())
+        with Data.get_db_session() as session:
+            data = pd.read_sql_query(query, session.connection())
         return data
 
     @staticmethod
@@ -38,7 +48,8 @@ class Data:
             query = f"SELECT index, {variable} FROM wwtp_data WHERE index BETWEEN '{timestamp}' AND '{timestamp + pd.DateOffset(days=1)}'"
         else:
             query = f"SELECT * FROM wwtp_data WHERE index BETWEEN '{timestamp}' AND '{timestamp + pd.DateOffset(days=1)}'"
-        data = pd.read_sql_query(query, Data.get_db_connection())
+        with Data.get_db_session() as session:
+            data = pd.read_sql_query(query, session.connection())
         return data
 
     @staticmethod
@@ -48,13 +59,14 @@ class Data:
             query = f"SELECT index, {variable} FROM wwtp_data WHERE index BETWEEN '{timestamp}' AND '{timestamp + pd.DateOffset(hours=1)}'"
         else:
             query = f"SELECT * FROM wwtp_data WHERE index BETWEEN '{timestamp}' AND '{timestamp + pd.DateOffset(hours=1)}'"
-        data = pd.read_sql_query(query, Data.get_db_connection())
+        with Data.get_db_session() as session:
+            data = pd.read_sql_query(query, session.connection())
         return data
     
     @staticmethod
     def get_variables():
-        engine = Data.get_db_connection()
-        metadata = MetaData()
-        wwtp_data = Table('wwtp_data', metadata, autoload_with=engine)
-        variables = [column.key for column in wwtp_data.columns if column.key != 'index']
+        with Data.get_db_session() as session:
+            metadata = MetaData()
+            wwtp_data = Table('wwtp_data', metadata, autoload_with=session.connection())
+            variables = [column.key for column in wwtp_data.columns if column.key != 'index']
         return variables
