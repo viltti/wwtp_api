@@ -24,6 +24,6 @@ Replace `<variable>` with the name of the variable you want data for.
 
 ## TODO
 
-- better errorhandling
+- comprehensive error handling
 - logging & performance
 - improve authentication
