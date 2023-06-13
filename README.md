@@ -20,7 +20,7 @@ The API consists of the following endpoints:
 * `/data/variable/<variable>/day`: Fetches the data for the previous day for a specified variable.
 * `/data/variable/<variable>/history`: Fetches all available historical data for a specified variable.
 
-Replace `<variable>` with the name of the variable you want data for.
+Replace `<variable>` with the name of the variable you want data for and put /api/ at the beginning e.g. the-url.com/api/data/variable/<variable>/hour.
 
 ## TODO
 
