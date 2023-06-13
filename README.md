@@ -2,7 +2,7 @@
 
 ## Overview
 
-This RESTful API is designed for use with a data application, which further processes the fetched data to create actionable insights for professionals in the field. The API fetches data from the database and forwards it to the data application. It provides multiple endpoints for fetching the data, making it flexible and useful for various data analysis, visualization and modeling tasks. It provides the flexibility to fetch data for all variables, or for a specific variable. Fetching data for a specific variable reduces the amount of data transferred, leading to quicker responses. The app that utilizes this API is deployed [here](http://wwtp-data-app.herokuapp.com/).
+This RESTful API is designed for use with a data application, which further processes the fetched (partly synthetic) data to create actionable insights for (fictional) professionals in the field. The API fetches data from the database and forwards it to the data application. It provides multiple endpoints for fetching the data, making it flexible and useful for various data analysis, visualization and modeling tasks. It provides the flexibility to fetch data for all variables, or for a specific variable. Fetching data for a specific variable reduces the amount of data transferred, leading to quicker responses. The app that utilizes this API is deployed [here](http://wwtp-data-app.herokuapp.com/).
 
 ## Endpoints
 
