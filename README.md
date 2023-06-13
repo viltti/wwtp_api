@@ -21,3 +21,9 @@ The API consists of the following endpoints:
 * `/data/variable/<variable>/history`: Fetches all available historical data for a specified variable.
 
 Replace `<variable>` with the name of the variable you want data for.
+
+## TODO
+
+- better errorhandling
+- logging & performance
+- improve authentication
